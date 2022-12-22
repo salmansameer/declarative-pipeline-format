@@ -1,0 +1,51 @@
+pipeline{
+    
+    tools{
+            jdk('myjava')
+            maven('mymaven')
+         }
+    agent any
+    stages{
+            stage('clonerepo')
+            {
+                steps{
+                git 'https://github.com/salmansameer/DevOpsClassCodesforked.git'
+                }
+            }
+            stage('compile')
+            {
+                steps{
+                    sh 'mvn compile'
+                }
+            }
+            stage('codereview')
+            {
+                steps{
+                    sh 'mvn pmd:pmd'
+                }
+            }
+            stage('unittest')
+            {
+                steps{
+                    sh 'mvn test'
+                }
+            }
+             stage('codecoverage')
+            {
+                steps{
+                    sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
+                }
+                 post{
+                     success{
+                         grt this step from snippet generation
+                     }
+                }
+            }
+            stage('package')
+            {
+                steps{
+                    sh 'mvn package'
+                }
+            }
+    }
+}
